@@ -1,0 +1,60 @@
+//login old code
+// if (req.body.password && req.body.email) {
+//   let user = await User.findOne(req.body).select("-password");
+//   if (user) {
+//     Jwt.sign({ user }, jwtKey, { expiresIn: "2h" }, (err, token) => {
+//       if (err) {
+//         res.send({
+//           result: "Something went wrong, Please try after sometime later..",
+//         });
+//       }
+//       res.send({ user, auth: token });
+//     });
+//   } else {
+//     res.send({ result: "No User Found" });
+//   }
+// } else {
+//   res.send({ result: "User Password or Email Not Match" });
+// }
+
+
+//register old code
+
+// result = result.toObject();
+//     delete result.password;
+//     Jwt.sign({ result }, jwtKey, { expiresIn: "2h" }, (err, token) => {
+//       if (err) {
+//         res.send({
+//           result: "Something went wrong, Please try after sometime later..",
+//         });
+//       }
+//       res.send({ result, auth: token });
+//     });
+
+
+
+//find only user
+// console.log(users);
+
+  // if (basicUser.role == "Basic") {
+  //   console.log(basicUser);
+  //   res.send(basicUser);
+  // } else {
+  //   res.send({ result: "No User found" });
+  // }
+  // res.send(user);
+
+
+
+  //find user by its id
+
+  // app.get("/admin/user/:id", async (req, res) => {
+//   const users = await User(req.body);
+//   const singleUser = User.findOne({ _id: users._id });
+
+//   if (!singleUser) {
+//     throw createError.NotFound("This user is not available.");
+//   }
+
+//   console.log(singleUser);
+// });
