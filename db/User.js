@@ -1,34 +1,38 @@
 const mongoose = require("mongoose");
+
 const bcrypt = require("bcrypt");
 
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
+// const ObjectId = Schema.ObjectId;
 
+// const Schema = mysql.Schema
 const userSchema = new Schema({
-  id: ObjectId,
-  name: {
+  USER_ID: {
+    type: String,
+  },
+  USER_NAME: {
     type: String,
     required: true,
     lowercase: true,
     unique: true,
   },
-  email: {
+  USER_EMAIL: {
     type: String,
     required: true,
     lowercase: true,
     unique: true,
   },
-  password: {
+  USER_PASSWORD: {
     type: String,
     required: true,
   },
-  role: {
+  USER_ROLE: {
     type: String,
     default: "Basic",
     required: true,
   },
-  active: {
-    type: Boolean,
+  USER_STATUS: {
+    type: String,
     default: true,
     required: true,
   },
@@ -37,8 +41,8 @@ const userSchema = new Schema({
 userSchema.pre("save", async function (next) {
   try {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(this.password, salt);
-    this.password = hashedPassword;
+    const hashedPassword = await bcrypt.hash(this.USER_PASSWORD, salt);
+    this.USER_PASSWORD = hashedPassword;
     next();
   } catch (error) {
     next(error);

@@ -1,4 +1,7 @@
+=====================++++++++++++++++++++++==================================
+
 //login old code
+
 // if (req.body.password && req.body.email) {
 //   let user = await User.findOne(req.body).select("-password");
 //   if (user) {
@@ -17,6 +20,7 @@
 //   res.send({ result: "User Password or Email Not Match" });
 // }
 
+=====================++++++++++++++++++++++==================================
 
 //register old code
 
@@ -31,9 +35,10 @@
 //       res.send({ result, auth: token });
 //     });
 
-
+=====================++++++++++++++++++++++==================================
 
 //find only user
+
 // console.log(users);
 
   // if (basicUser.role == "Basic") {
@@ -44,7 +49,7 @@
   // }
   // res.send(user);
 
-
+=====================++++++++++++++++++++++==================================
 
   //find user by its id
 
@@ -58,3 +63,70 @@
 
 //   console.log(singleUser);
 // });
+
+=====================++++++++++++++++++++++==================================
+
+// mongoose connection to mongo DB code 
+
+// const mongoose = require("mongoose");
+
+// mongoose
+//   .connect(process.env.MONGODB_URI, {
+//     dbName: process.env.DB_NAME,
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => {
+//     console.log("mongodb connected.");
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
+
+// mongoose.connection.on("connected", () => {
+//   console.log("Mongoose connected to DB");
+// });
+
+// mongoose.connection.on("error", (err) => {
+//   console.log(err.message);
+// });
+
+// mongoose.connection.on("disconnected", () => {
+//   console.log("Mongoose connection is disconnected.");
+// });
+
+// process.on("SIGINT", async () => {
+//   await mongoose.connection.close();
+//   process.exit(0);
+// });
+
+=====================++++++++++++++++++++++==================================
+
+//old query of registertion
+
+// db.query(
+    //   "INSERT INTO `tbl_user`( `USER_ID`, `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD`) VALUES (? , ? , ? , ?)",
+    //   [uuid.v4(), USER_NAME, USER_EMAIL, USER_PASSWORD]
+    // );
+
+    // console.log(req.body);
+    // res.send(req.body);
+
+    // const result = await registerSchema.validateAsync(req.body);
+
+    // console.log(result);
+
+    // const doesExist = await User.findOne({ USER_EMAIL: result.USER_EMAIL });
+    // if (doesExist) {
+    // throw createError.Conflict(
+    //   `${result.USER_EMAIL} is already been registered.`
+    // );
+    // }
+
+    // res.send(result);
+    // let user = new User(result);
+
+    // let savedUser = await user.save();
+    // res.send(savedUser);
+
+=====================++++++++++++++++++++++==================================

@@ -2,19 +2,21 @@ const express = require("express");
 const cors = require("cors");
 const createError = require("http-errors");
 const uuid = require("uuid");
+const bcrypt = require("bcrypt");
+const mysql = require("mysql");
 
 require("dotenv").config();
 
-const Jwt = require("jsonwebtoken");
-const jwtKey = "mui-tabs";
+// const Jwt = require("jsonwebtoken");
+// const jwtKey = "mui-tabs";
 
 require("./db/config");
 const User = require("./db/User");
 
-const { loginSchema, registerSchema } = require("./db/validation_schema");
-const { signAccessToken, signRefreshToken } = require("./db/jwt_helper");
+// const { loginSchema, registerSchema } = require("./db/validation_schema");
+// const { signAccessToken, signRefreshToken } = require("./db/jwt_helper");
 const { verifyAccessToken } = require("./db/jwt_helper");
-// import userRoutes from "./routes/admin.js";
+const db = require("./db/config");
 
 const app = express();
 
@@ -30,23 +32,59 @@ app.get("/", verifyAccessToken, async (req, res, next) => {
 // Registration API
 app.post("/register", async (req, res, next) => {
   try {
-    // const { name, email, password } = req.body;
-
     // if (!name || !email || !password) throw createError.BadRequest();
-    const result = await registerSchema.validateAsync(req.body);
+    // const { USER_NAME, USER_EMAIL, USER_PASSWORD } = req.body;
 
-    const doesExist = await User.findOne({ email: result.email });
-    if (doesExist) {
-      throw createError.Conflict(`${result.email} is already been registered.`);
-    }
-    let user = new User(result);
+    const name = req.body.USER_NAME;
+    const email = req.body.USER_EMAIL;
+    const hashedPassword = await bcrypt.hash(req.body.USER_PASSWORD, 10);
+    db.getConnection(async (err, connection) => {
+      if (err) {
+        throw err;
+      }
+
+      const sqlSearch = "SELECT * FROM tbl_user WHERE USER_EMAIL = ?";
+      const search_query = mysql.format(sqlSearch, [email]);
+
+      const sqlInsert =
+        "INSERT INTO `tbl_user`( `USER_ID`, `USER_NAME`, `USER_EMAIL`, `USER_PASSWORD`) VALUES (? , ? , ? , ?)";
+      const insert_query = mysql.format(sqlInsert, [
+        uuid.v4(),
+        name,
+        email,
+        hashedPassword,
+      ]);
+
+      await connection.query(search_query, async (err, result) => {
+        if (err) {
+          throw err;
+        }
+        console.log(result.length);
+
+        if (result.length != 0) {
+          connection.release();
+          console.log("------> User already exists");
+          // res.sendStatus(409);
+          return next(createError.Conflict("User already exists"));
+        } else {
+          await connection.query(insert_query, (err, result) => {
+            if (err) {
+              throw err;
+            }
+            res.send(result.insertId);
+            res.sendStatus(201);
+          });
+        }
+      });
+    });
+
+    //This is not used currently
+    //+=+=+++=+=+++++=+++++++++===+++=====++++========+++
     // User.push({ ...user, id: uuid() });
-    let savedUser = await user.save();
     // const accessToken = await signAccessToken(savedUser.id);
     // const refreshToken = await signRefreshToken(savedUser.id);
-
     // res.send({ savedUser, accessToken, refreshToken });
-    res.send(savedUser);
+    //+=+=+++=+=+++++=+++++++++===+++=====++++========+++
   } catch (error) {
     //422 is content type error or Unprocessable Entity
     if (error.isJoi === true) {
